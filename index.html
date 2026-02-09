@@ -2,7 +2,7 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>IMAGINEM - Ultimate Edition</title>
     
     <!-- Tailwind CSS -->
@@ -13,32 +13,52 @@
     
     <!-- Estilos Base Críticos -->
     <style>
+        /* Optimización Móvil Global */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #000; 
             margin: 0; 
             overflow: hidden; 
+            overscroll-behavior: none; /* Evita el rebote de la página entera */
         }
         
-        /* Animaciones globales */
-        @keyframes float { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
-        @keyframes float-delayed { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(-30px, 50px) scale(1.2); } 66% { transform: translate(20px, -30px) scale(0.8); } 100% { transform: translate(0px, 0px) scale(1); } }
+        /* Animaciones globales optimizadas */
+        @keyframes float { 0% { transform: translate3d(0px, 0px, 0px) scale(1); } 33% { transform: translate3d(30px, -50px, 0px) scale(1.1); } 66% { transform: translate3d(-20px, 20px, 0px) scale(0.9); } 100% { transform: translate3d(0px, 0px, 0px) scale(1); } }
+        @keyframes float-delayed { 0% { transform: translate3d(0px, 0px, 0px) scale(1); } 33% { transform: translate3d(-30px, 50px, 0px) scale(1.2); } 66% { transform: translate3d(20px, -30px, 0px) scale(0.8); } 100% { transform: translate3d(0px, 0px, 0px) scale(1); } }
         @keyframes pulse-soft { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } }
-        @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slide-up { from { transform: translate3d(0, 100%, 0); opacity: 0; } to { transform: translate3d(0, 0, 0); opacity: 1; } }
         @keyframes slide-right { from { width: 0; } to { width: var(--target-width); } }
         
-        .animate-float { animation: float 15s ease-in-out infinite; }
-        .animate-float-delayed { animation: float-delayed 18s ease-in-out infinite; }
-        .animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; }
-        .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
+        .animate-float { animation: float 15s ease-in-out infinite; will-change: transform; }
+        .animate-float-delayed { animation: float-delayed 18s ease-in-out infinite; will-change: transform; }
+        .animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; will-change: transform, opacity; }
+        .animate-slide-up { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
+        /* Scrollbar oculta y Momentum Scrolling */
         .custom-scrollbar::-webkit-scrollbar { width: 0px; background: transparent; }
         .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .gpu-accelerated { transform: translate3d(0,0,0); backface-visibility: hidden; }
+        
+        .momentum-scroll {
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        /* Forzar GPU */
+        .gpu-accelerated { 
+            transform: translateZ(0); 
+            backface-visibility: hidden; 
+            perspective: 1000px;
+            will-change: transform, opacity;
+        }
         
         .theme-transition {
-            transition-property: background-color, border-color, color, fill, stroke, shadow, opacity, transform;
-            transition-duration: 500ms;
+            transition-property: background-color, border-color, color, fill, stroke, opacity, transform;
+            transition-duration: 400ms;
             transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
