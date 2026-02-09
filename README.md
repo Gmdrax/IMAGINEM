@@ -1,8 +1,8 @@
-# **IMAGINEM \- Ultimate Edition 🚀**
+# **IMAGINEM**
 
 **IMAGINEM** es un concepto revolucionario de aplicación fintech diseñada para la Generación Z, fusionando banca tradicional con gamificación, IA y conciencia ecológica.
 
-Esta "Ultimate Edition" incluye todas las características premium desbloqueadas, un sistema de diseño adaptable (Life Mode) y herramientas de gestión financiera automatizada.
+Esta version incluye todas las características premium desbloqueadas, un sistema de diseño adaptable (Life Mode) y herramientas de gestión financiera automatizada.
 
 ## **✨ Características Principales**
 
