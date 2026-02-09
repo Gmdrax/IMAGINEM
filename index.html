@@ -23,8 +23,10 @@ const GlobalStyles = () => (
     .animate-pulse-soft { animation: pulse-soft 4s ease-in-out infinite; }
     .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
 
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Scrollbar oculta pero funcional */
+    .custom-scrollbar::-webkit-scrollbar { width: 0px; background: transparent; }
+    .custom-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
     .gpu-accelerated { transform: translate3d(0,0,0); backface-visibility: hidden; }
     
     .theme-transition {
@@ -545,104 +547,123 @@ export default function App() {
   return (
     <>
     <GlobalStyles />
-    <div className={`min-h-screen font-sans theme-transition selection:bg-[#00e0b0] selection:text-black overflow-hidden relative ${lifeMode ? 'bg-[#050505]' : 'bg-[#f2f6f9]'}`}>
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-          <div className={`absolute top-[-10%] left-[-10%] w-[800px] h-[800px] rounded-full blur-[120px] opacity-20 animate-float theme-transition ${lifeMode ? 'bg-[#00e0b0]' : 'bg-blue-300'}`}></div>
-          <div className={`absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full blur-[120px] opacity-20 animate-float-delayed theme-transition ${lifeMode ? 'bg-purple-600' : 'bg-green-200'}`}></div>
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
-      </div>
-
-      <div className={`max-w-md mx-auto h-screen relative flex flex-col theme-transition ${lifeMode ? 'bg-black/40 backdrop-blur-3xl border-x border-white/5' : 'bg-white/60 backdrop-blur-2xl border-x border-white/40 shadow-2xl'} overflow-hidden z-10`}>
+    
+    {/* Main Outer Container: Handles Desktop vs Mobile Environment */}
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#111] text-foreground transition-colors duration-500">
         
-        {/* Header */}
-        <div className={`px-6 pt-14 pb-4 flex justify-between items-center sticky top-0 z-50 theme-transition ${lifeMode ? 'bg-black/0' : 'bg-white/0'}`}>
-          <div className={`absolute inset-0 backdrop-blur-xl border-b theme-transition ${lifeMode ? 'bg-black/50 border-white/5' : 'bg-white/70 border-gray-200/50'}`}></div>
-          <div className="relative z-10 flex items-center gap-2.5"><div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center text-white font-black text-sm shadow-xl">im</div><span className={`font-bold text-xl tracking-tight theme-transition ${lifeMode ? 'text-white' : 'text-black'}`}>IMAGINEM</span></div>
-          <div className="relative z-10 flex gap-3">
-            <button 
-                onClick={() => setShowHelp(!showHelp)} 
-                className={`w-11 h-11 rounded-full flex items-center justify-center theme-transition active:scale-95 ${
-                    showHelp ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : (lifeMode ? 'bg-white/10 text-white' : 'bg-white text-gray-600')
-                }`}
-            >
-                <Info size={18} />
-            </button>
-            <ModeToggle />
-            <button onClick={() => setPrivacyMode(!privacyMode)} className={`w-11 h-11 rounded-full flex items-center justify-center theme-transition active:scale-95 ${lifeMode ? 'bg-white/10 text-white' : 'bg-white text-gray-600 shadow-sm'}`}>{privacyMode ? <EyeOff size={18} /> : <Eye size={18} />}</button>
-          </div>
-        </div>
+        {/* Phone Frame Container */}
+        {/* sm: prefix triggers "Desktop Mode" -> Adds phone borders, fixed size, shadow */}
+        {/* Default (no prefix) triggers "Mobile Mode" -> Full width/height, no borders */}
+        <div className="w-full h-[100dvh] sm:h-[850px] sm:w-[400px] sm:rounded-[3rem] sm:border-[8px] sm:border-[#222] sm:shadow-2xl relative overflow-hidden bg-black transition-all duration-500">
 
-        <div id="main-content" className={`flex-1 px-6 pt-6 overflow-y-auto custom-scrollbar relative z-10 scroll-smooth transition-opacity duration-200 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-          {activeTab === 'dashboard' && <DashboardView />}
-          {activeTab === 'map' && <MapView />}
-          {activeTab === 'flow' && <FlowView />}
-          {activeTab === 'travel' && <TravelView />} 
-          {activeTab === 'offers' && <OffersView />}
-          {activeTab === 'hub' && <HubView />}
-        </div>
-
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center z-50 pointer-events-none px-4">
-            <div className={`pointer-events-auto flex items-center gap-1 p-2 rounded-[2.5rem] shadow-2xl border theme-transition ${lifeMode ? 'bg-[#111]/80 border-gray-800' : 'bg-white/80 border-white/60'}`}>
-               <NavBtn icon={<Wallet size={20}/>} active={activeTab === 'dashboard'} onClick={() => handleTabChange('dashboard')} lifeMode={lifeMode} />
-               <NavBtn icon={<MapIcon size={20}/>} active={activeTab === 'map'} onClick={() => handleTabChange('map')} lifeMode={lifeMode} />
-               <NavBtn icon={<Globe2 size={20}/>} active={activeTab === 'travel'} onClick={() => handleTabChange('travel')} lifeMode={lifeMode} />
-               <NavBtn icon={<PieChart size={20}/>} active={activeTab === 'flow'} onClick={() => handleTabChange('flow')} lifeMode={lifeMode} />
-               <NavBtn icon={<Gift size={20}/>} active={activeTab === 'offers'} onClick={() => handleTabChange('offers')} lifeMode={lifeMode} />
-               <div className="w-px h-8 bg-gray-400/20 mx-1"></div>
-               <div onClick={() => handleTabChange('hub')} className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all hover:scale-110 active:scale-90 ${activeTab === 'hub' ? 'bg-[#00e0b0] text-black ring-4 ring-[#00e0b0]/30' : 'bg-black'}`}><Shield size={20} /></div>
-            </div>
-        </div>
-
-        <div className="absolute top-24 left-0 right-0 z-[60] flex flex-col items-center gap-2 pointer-events-none px-4">
-            {toasts.map(toast => (
-                <div key={toast.id} className={`px-4 py-2 rounded-xl text-xs font-bold shadow-xl animate-slide-up flex items-center gap-2 ${toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>
-                    {toast.type === 'success' && <Check size={14} className="text-[#00e0b0]" />}
-                    {toast.message}
+            {/* Content Wrapper */}
+            <div className={`w-full h-full font-sans theme-transition selection:bg-[#00e0b0] selection:text-black overflow-hidden relative ${lifeMode ? 'bg-[#050505]' : 'bg-[#f2f6f9]'}`}>
+                
+                {/* Background Blobs (Inside the phone frame) */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                    <div className={`absolute top-[-10%] left-[-10%] w-[800px] h-[800px] rounded-full blur-[120px] opacity-20 animate-float theme-transition ${lifeMode ? 'bg-[#00e0b0]' : 'bg-blue-300'}`}></div>
+                    <div className={`absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full blur-[120px] opacity-20 animate-float-delayed theme-transition ${lifeMode ? 'bg-purple-600' : 'bg-green-200'}`}></div>
+                    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
                 </div>
-            ))}
-        </div>
 
-        {showAiModal && (
-            <div className="absolute inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
-                <div className={`w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom ${lifeMode ? 'bg-gray-900 border border-gray-800' : 'bg-white'}`}>
-                    <div className="p-4 bg-gradient-to-r from-[#00e0b0] to-blue-500 flex justify-between items-center text-white"><div className="flex items-center gap-3"><Bot size={24} /><span className="font-bold text-sm">ImaginAI</span></div><button onClick={() => setShowAiModal(false)}><X size={20} /></button></div>
-                    <div className="h-64 p-4 overflow-y-auto space-y-4">
-                        {aiMessages.map((msg, i) => (
-                            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
-                                <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-black text-white rounded-tr-sm' : (lifeMode ? 'bg-gray-800 text-gray-200 rounded-tl-sm' : 'bg-gray-100 text-gray-800 rounded-tl-sm')}`}>
-                                    {msg.text}
-                                </div>
-                            </div>
-                        ))}
-                        {isAiTyping && (
-                            <div className="flex justify-start">
-                                <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${lifeMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-tl-sm`}>
-                                    <div className="dot-flashing ml-2"></div>
-                                </div>
-                            </div>
-                        )}
-                        <div ref={messagesEndRef} />
-                    </div>
-                    <div className={`p-3 border-t ${lifeMode ? 'border-gray-800 bg-gray-900' : 'border-gray-100 bg-white'}`}>
-                        <div className="flex gap-2">
-                            <input 
-                                value={inputMsg}
-                                onChange={(e) => setInputMsg(e.target.value)}
-                                placeholder="Escriu alguna cosa..."
-                                className={`flex-1 rounded-xl px-4 py-3 text-sm outline-none theme-transition ${lifeMode ? 'bg-gray-800 text-white placeholder-gray-500 focus:bg-gray-700' : 'bg-gray-100 text-black placeholder-gray-400 focus:bg-gray-50'}`}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && inputMsg) handleSendMessage();
-                                }}
-                            />
-                            <button onClick={handleSendMessage} className="w-11 h-11 rounded-xl bg-[#00e0b0] text-black flex items-center justify-center hover:bg-[#00cba0] transition-colors shadow-lg shadow-[#00e0b0]/20 active:scale-95 duration-200">
-                                <ArrowUpRight size={22} />
+                {/* Main App Content Structure */}
+                <div className={`w-full h-full relative flex flex-col theme-transition ${lifeMode ? 'bg-black/40 backdrop-blur-3xl border-x border-white/5' : 'bg-white/60 backdrop-blur-2xl border-x border-white/40 shadow-2xl'} overflow-hidden z-10`}>
+                    
+                    {/* Header */}
+                    <div className={`px-6 pt-14 pb-4 flex justify-between items-center sticky top-0 z-50 theme-transition ${lifeMode ? 'bg-black/0' : 'bg-white/0'}`}>
+                        <div className={`absolute inset-0 backdrop-blur-xl border-b theme-transition ${lifeMode ? 'bg-black/50 border-white/5' : 'bg-white/70 border-gray-200/50'}`}></div>
+                        <div className="relative z-10 flex items-center gap-2.5"><div className="w-9 h-9 bg-black rounded-xl flex items-center justify-center text-white font-black text-sm shadow-xl">im</div><span className={`font-bold text-xl tracking-tight theme-transition ${lifeMode ? 'text-white' : 'text-black'}`}>IMAGINEM</span></div>
+                        <div className="relative z-10 flex gap-3">
+                            <button 
+                                onClick={() => setShowHelp(!showHelp)} 
+                                className={`w-11 h-11 rounded-full flex items-center justify-center theme-transition active:scale-95 ${
+                                    showHelp ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : (lifeMode ? 'bg-white/10 text-white' : 'bg-white text-gray-600')
+                                }`}
+                            >
+                                <Info size={18} />
                             </button>
+                            <ModeToggle />
+                            <button onClick={() => setPrivacyMode(!privacyMode)} className={`w-11 h-11 rounded-full flex items-center justify-center theme-transition active:scale-95 ${lifeMode ? 'bg-white/10 text-white' : 'bg-white text-gray-600 shadow-sm'}`}>{privacyMode ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                         </div>
                     </div>
+
+                    {/* Scrollable Content Area */}
+                    <div id="main-content" className={`flex-1 px-6 pt-6 overflow-y-auto custom-scrollbar relative z-10 scroll-smooth transition-opacity duration-200 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+                        {activeTab === 'dashboard' && <DashboardView />}
+                        {activeTab === 'map' && <MapView />}
+                        {activeTab === 'flow' && <FlowView />}
+                        {activeTab === 'travel' && <TravelView />} 
+                        {activeTab === 'offers' && <OffersView />}
+                        {activeTab === 'hub' && <HubView />}
+                    </div>
+
+                    {/* Bottom Navigation */}
+                    <div className="absolute bottom-8 left-0 right-0 flex justify-center z-50 pointer-events-none px-4">
+                        <div className={`pointer-events-auto flex items-center gap-1 p-2 rounded-[2.5rem] shadow-2xl border theme-transition ${lifeMode ? 'bg-[#111]/80 border-gray-800' : 'bg-white/80 border-white/60'}`}>
+                            <NavBtn icon={<Wallet size={20}/>} active={activeTab === 'dashboard'} onClick={() => handleTabChange('dashboard')} lifeMode={lifeMode} />
+                            <NavBtn icon={<MapIcon size={20}/>} active={activeTab === 'map'} onClick={() => handleTabChange('map')} lifeMode={lifeMode} />
+                            <NavBtn icon={<Globe2 size={20}/>} active={activeTab === 'travel'} onClick={() => handleTabChange('travel')} lifeMode={lifeMode} />
+                            <NavBtn icon={<PieChart size={20}/>} active={activeTab === 'flow'} onClick={() => handleTabChange('flow')} lifeMode={lifeMode} />
+                            <NavBtn icon={<Gift size={20}/>} active={activeTab === 'offers'} onClick={() => handleTabChange('offers')} lifeMode={lifeMode} />
+                            <div className="w-px h-8 bg-gray-400/20 mx-1"></div>
+                            <div onClick={() => handleTabChange('hub')} className={`w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer transition-all hover:scale-110 active:scale-90 ${activeTab === 'hub' ? 'bg-[#00e0b0] text-black ring-4 ring-[#00e0b0]/30' : 'bg-black'}`}><Shield size={20} /></div>
+                        </div>
+                    </div>
+
+                    {/* Notifications / Toasts Layer */}
+                    <div className="absolute top-24 left-0 right-0 z-[60] flex flex-col items-center gap-2 pointer-events-none px-4">
+                        {toasts.map(toast => (
+                            <div key={toast.id} className={`px-4 py-2 rounded-xl text-xs font-bold shadow-xl animate-slide-up flex items-center gap-2 ${toast.type === 'error' ? 'bg-red-500 text-white' : 'bg-black text-white'}`}>
+                                {toast.type === 'success' && <Check size={14} className="text-[#00e0b0]" />}
+                                {toast.message}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* AI Modal */}
+                    {showAiModal && (
+                        <div className="absolute inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
+                            <div className={`w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom ${lifeMode ? 'bg-gray-900 border border-gray-800' : 'bg-white'}`}>
+                                <div className="p-4 bg-gradient-to-r from-[#00e0b0] to-blue-500 flex justify-between items-center text-white"><div className="flex items-center gap-3"><Bot size={24} /><span className="font-bold text-sm">ImaginAI</span></div><button onClick={() => setShowAiModal(false)}><X size={20} /></button></div>
+                                <div className="h-64 p-4 overflow-y-auto space-y-4">
+                                    {aiMessages.map((msg, i) => (
+                                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-2`}>
+                                            <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-black text-white rounded-tr-sm' : (lifeMode ? 'bg-gray-800 text-gray-200 rounded-tl-sm' : 'bg-gray-100 text-gray-800 rounded-tl-sm')}`}>
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {isAiTyping && (
+                                        <div className="flex justify-start">
+                                            <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${lifeMode ? 'bg-gray-800' : 'bg-gray-100'} rounded-tl-sm`}>
+                                                <div className="dot-flashing ml-2"></div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                                <div className={`p-3 border-t ${lifeMode ? 'border-gray-800 bg-gray-900' : 'border-gray-100 bg-white'}`}>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            value={inputMsg}
+                                            onChange={(e) => setInputMsg(e.target.value)}
+                                            placeholder="Escriu alguna cosa..."
+                                            className={`flex-1 rounded-xl px-4 py-3 text-sm outline-none theme-transition ${lifeMode ? 'bg-gray-800 text-white placeholder-gray-500 focus:bg-gray-700' : 'bg-gray-100 text-black placeholder-gray-400 focus:bg-gray-50'}`}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && inputMsg) handleSendMessage();
+                                            }}
+                                        />
+                                        <button onClick={handleSendMessage} className="w-11 h-11 rounded-xl bg-[#00e0b0] text-black flex items-center justify-center hover:bg-[#00cba0] transition-colors shadow-lg shadow-[#00e0b0]/20 active:scale-95 duration-200">
+                                            <ArrowUpRight size={22} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
-        )}
-      </div>
+        </div>
     </div>
     </>
   );
